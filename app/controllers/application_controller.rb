@@ -7,7 +7,8 @@ before_action :authenticate
 
     def current_user
         if auth_present?
-            user = User.find(auth[user])
+       
+            user = User.find(auth["user"])
             if user 
                 @current_user ||= user
             end
@@ -15,15 +16,15 @@ before_action :authenticate
     end
 
     def authenticate
-        render json: {error: "unauthorized"}, status: 404 
-        unless logged_in? 
+        unless logged_in?
+            render json: {error: "unauthorized"}, status: 404 
+        end
     end
 
     private
 
     def token
-        request.ENV["HTTP_AUHTORIZATION"].scan(/Bearer
-        (.*)$/).flatten.last
+        request.env["HTTP_AUTHORIZATION"].scan(/Bearer (.*)$/).flatten.last
     end
 
     def auth
@@ -31,7 +32,7 @@ before_action :authenticate
     end
 
     def auth_present?
-        !!request.env.fetch("FETCH_AUTHORIZATION", "".)scan(/Bearer/).flatten.first
+        !!request.env.fetch("HTTP_AUTHORIZATION", "").scan(/Bearer/).flatten.first
     end
 
 end
